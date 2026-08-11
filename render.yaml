@@ -6,6 +6,8 @@ services:
     buildCommand: cd client && npm install --include=dev && npm run build && cd ../server && npm install
     startCommand: cd server && npm start
     autoDeploy: true
+    domains:
+      - nholyngrace.com
     envVars:
       - key: NODE_ENV
         value: production
