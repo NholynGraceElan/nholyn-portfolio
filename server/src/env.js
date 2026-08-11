@@ -44,11 +44,11 @@ export function bootstrapEnv() {
     console.log('[env] Generated ENCRYPTION_KEY (AES-256-GCM).');
   }
 
-  if (!env.ADMIN_USERNAME) {
+  if (!env.ADMIN_USERNAME && !process.env.ADMIN_USERNAME) {
     additions.push('ADMIN_USERNAME=nholyn');
   }
 
-  if (!env.ADMIN_PASSWORD_HASH) {
+  if (!env.ADMIN_PASSWORD_HASH && !process.env.ADMIN_PASSWORD_HASH) {
     const password = crypto.randomBytes(5).toString('base64url');
     const hash = bcrypt.hashSync(password, 12);
     additions.push(`ADMIN_PASSWORD_HASH=${hash}`);

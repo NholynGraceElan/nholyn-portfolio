@@ -13,6 +13,8 @@ services:
         value: https://nholyngrace.com
       - key: ADMIN_USERNAME
         value: nholyn
+      - key: ADMIN_PASSWORD_HASH
+        value: $2b$12$fY9lzL2KPv4uhgjrdQsOCeyOUD79MYS4jGc2UBTs4SXYSi9HxNHI6
       - key: JWT_SECRET
         generateValue: true
       - key: ENCRYPTION_KEY
