@@ -1,0 +1,51 @@
+﻿{
+    "projects":  [
+                     "/projects/find-folds-brand-kit.jpg",
+                     "/projects/find-folds-logo.jpg",
+                     "/projects/find-folds-paper-bag.jpg",
+                     "/projects/find-folds-street.jpg",
+                     "/projects/bread-studio-logo.jpg",
+                     "/projects/donut-1.jpg",
+                     "/projects/donut-2.jpg",
+                     "/projects/donut-3.jpg",
+                     "/projects/magazine-cover.jpg",
+                     "/projects/book-page.jpg",
+                     "/projects/lookbook-cover.jpg",
+                     "/projects/want-font.jpg",
+                     "/projects/andy-mc.jpg",
+                     "/projects/king-mark-mc.jpg",
+                     "/projects/rico-mc.jpg",
+                     "/projects/mark-anthony-mc.jpg",
+                     "/projects/second-mc.jpg",
+                     "/projects/third-mc.jpg"
+                 ],
+    "lookbook":  [
+                     "/lookbook/lookbook-01.jpg",
+                     "/lookbook/lookbook-02.jpg",
+                     "/lookbook/lookbook-03.jpg",
+                     "/lookbook/lookbook-04.jpg",
+                     "/lookbook/lookbook-05.jpg",
+                     "/lookbook/lookbook-06.jpg",
+                     "/lookbook/lookbook-07.jpg",
+                     "/lookbook/lookbook-08.jpg",
+                     "/lookbook/lookbook-09.jpg",
+                     "/lookbook/lookbook-10.jpg",
+                     "/lookbook/lookbook-11.jpg",
+                     "/lookbook/lookbook-12.jpg",
+                     "/lookbook/lookbook-13.jpg",
+                     "/lookbook/lookbook-14.jpg",
+                     "/lookbook/lookbook-15.jpg",
+                     "/lookbook/lookbook-16.jpg",
+                     "/lookbook/lookbook-17.jpg",
+                     "/lookbook/lookbook-18.jpg",
+                     "/lookbook/lookbook-19.jpg",
+                     "/lookbook/lookbook-20.jpg",
+                     "/lookbook/lookbook-21.jpg",
+                     "/lookbook/lookbook-22.jpg"
+                 ],
+    "portraits":  [
+                      "/portraits/official.jpg",
+                      "/portraits/photoshoot.jpg",
+                      "/portraits/barbie.jpg"
+                  ]
+}
