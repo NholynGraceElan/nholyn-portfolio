@@ -19,7 +19,7 @@ dotenv.config({ path: ENV_PATH });
 const app = express();
 const PORT = Number(getEnv('PORT', '4000'));
 const CLIENT_ORIGIN = getEnv('CLIENT_ORIGIN', 'http://localhost:5173');
-const ENCRYPTION_KEY = keyFromHex(getEnv('ENCRYPTION_KEY'));
+const ENCRYPTION_KEY = keyFromHex(sha256(getEnv('ENCRYPTION_KEY', crypto.randomBytes(32).toString('hex'))));
 const JWT_SECRET = getEnv('JWT_SECRET');
 const ADMIN_USERNAME = getEnv('ADMIN_USERNAME', 'nholyn');
 const ADMIN_PASSWORD_HASH = getEnv('ADMIN_PASSWORD_HASH');

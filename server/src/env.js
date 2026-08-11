@@ -32,13 +32,13 @@ export function bootstrapEnv() {
   const additions = [];
   let printedPassword = null;
 
-  if (!env.JWT_SECRET) {
+  if (!env.JWT_SECRET && !process.env.JWT_SECRET) {
     const secret = crypto.randomBytes(32).toString('hex');
     additions.push(`JWT_SECRET=${secret}`);
     console.log('[env] Generated JWT_SECRET (new).');
   }
 
-  if (!env.ENCRYPTION_KEY) {
+  if (!env.ENCRYPTION_KEY && !process.env.ENCRYPTION_KEY) {
     const key = crypto.randomBytes(32).toString('hex');
     additions.push(`ENCRYPTION_KEY=${key}`);
     console.log('[env] Generated ENCRYPTION_KEY (AES-256-GCM).');
