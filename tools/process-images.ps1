@@ -41,7 +41,6 @@ $projects = @(
   @{ out = "magazine-cover.jpg";       src = "JEAN MARA ANDOY MAGAZINE COVER..png" },
   @{ out = "book-page.jpg";            src = "Nholyn Book Page.jpe" },
   @{ out = "lookbook-cover.jpg";       src = "Single Lookbook Cover.jpg" },
-  @{ out = "want-font.jpg";            src = "Nholyn Want Font.jpe" },
   @{ out = "andy-mc.jpg";              src = "Andy MC 1.png" },
   @{ out = "king-mark-mc.jpg";         src = "King Mark MC 1.png" },
   @{ out = "rico-mc.jpg";              src = "Rico MC 1.png" },

@@ -13,7 +13,6 @@ const META = {
   'magazine-cover.jpg': { title: 'Jean Mara Andoy', tag: 'Magazine Cover' },
   'book-page.jpg': { title: 'Nholyn Grace', tag: 'Book Page' },
   'lookbook-cover.jpg': { title: 'Single Lookbook', tag: 'Cover' },
-  'want-font.jpg': { title: 'Nholyn Grace', tag: 'Typography Study' },
   'andy-mc.jpg': { title: 'Andy', tag: 'Magazine Cover' },
   'king-mark-mc.jpg': { title: 'King Mark', tag: 'Magazine Cover' },
   'rico-mc.jpg': { title: 'Rico', tag: 'Magazine Cover' },
@@ -61,8 +60,8 @@ export default function Projects({ images }) {
   const [brandKit, ...findFoldsRest] = findFolds;
   const bread = images[4];
   const donuts = images.slice(5, 8);
-  const editorial = images.slice(8, 12);
-  const live = images.slice(12, 18);
+  const editorial = images.slice(8, 11);
+  const live = images.slice(11, 17);
 
   return (
     <section id="work" className="section projects">
@@ -125,7 +124,7 @@ export default function Projects({ images }) {
         {/* III — Editorial print */}
         <div className="proj-group">
           <GroupHead num="III" name="Editorial Print" />
-          <div className="plates plates--four">
+          <div className="plates plates--trio">
             {editorial.map((src, i) => (
               <Plate key={src} src={src} index={i} />
             ))}
