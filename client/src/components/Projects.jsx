@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import Reveal from './Reveal.jsx';
+import { useLightbox } from '../lightbox/LightboxProvider.jsx';
 
 const META = {
   'find-folds-brand-kit.jpg': { title: 'Find & Folds', tag: 'Brand Kit' },
@@ -21,7 +22,7 @@ const META = {
   'third-mc.jpg': { title: 'Magazine Cover', tag: 'Issue 03' },
 };
 
-function Plate({ src, index, className = '', big = false }) {
+function Plate({ src, index, className = '', big = false, onOpen }) {
   const key = src.split('/').pop();
   const meta = META[key] || { title: 'Project', tag: '' };
   return (
@@ -32,9 +33,12 @@ function Plate({ src, index, className = '', big = false }) {
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.9, delay: (index % 4) * 0.1, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="plate-frame">
+      <button className="plate-frame" onClick={onOpen} aria-label={`View ${meta.title} — ${meta.tag} in full size`}>
         <img src={src} alt={`${meta.title} — ${meta.tag}`} loading="lazy" />
-      </div>
+        <span className="plate-zoom" aria-hidden="true">
+          <span>&#8682;</span>
+        </span>
+      </button>
       <figcaption className="plate-cap">
         <strong>{meta.title}</strong>
         <span>{meta.tag}</span>
@@ -56,6 +60,19 @@ function GroupHead({ num, name, note }) {
 }
 
 export default function Projects({ images }) {
+  const { open } = useLightbox();
+
+  const openAt = (i) => {
+    open(
+      images.map((src) => {
+        const key = src.split('/').pop();
+        const meta = META[key] || { title: 'Project', tag: '' };
+        return { src, caption: `${meta.title} — ${meta.tag}` };
+      }),
+      i
+    );
+  };
+
   const findFolds = images.slice(0, 4);
   const [brandKit, ...findFoldsRest] = findFolds;
   const bread = images[4];
@@ -73,7 +90,7 @@ export default function Projects({ images }) {
               <h2 className="display">Projects &amp; Collabs</h2>
             </div>
             <p className="section-note">
-              Brand systems, Notion workspace samples, editorial prints, and magazine cover craft.
+              Brand systems, Notion workspace samples, editorial prints, and magazine cover craft. Click any piece to view it full size.
             </p>
           </div>
         </Reveal>
@@ -82,7 +99,7 @@ export default function Projects({ images }) {
         <div className="proj-group">
           <GroupHead num="I" name="Find & Folds — Brand Identity" />
           <div className="ff-showcase">
-            <Plate src={brandKit} index={0} big />
+            <Plate src={brandKit} index={0} big onOpen={() => openAt(0)} />
             <Reveal delay={0.1} className="ff-info">
               <span className="eyebrow">Identity &amp; Brand</span>
               <h3 className="display">Find &amp; Folds</h3>
@@ -99,11 +116,11 @@ export default function Projects({ images }) {
           </div>
           <div className="plates plates--trio">
             {findFoldsRest.map((src, i) => (
-              <Plate key={src} src={src} index={i + 1} />
+              <Plate key={src} src={src} index={i + 1} onOpen={() => openAt(i + 1)} />
             ))}
           </div>
           <div className="plates plates--single">
-            <Plate src={bread} index={0} />
+            <Plate src={bread} index={0} onOpen={() => openAt(4)} />
           </div>
         </div>
 
@@ -116,7 +133,7 @@ export default function Projects({ images }) {
           />
           <div className="plates plates--trio">
             {donuts.map((src, i) => (
-              <Plate key={src} src={src} index={i} />
+              <Plate key={src} src={src} index={i} onOpen={() => openAt(i + 5)} />
             ))}
           </div>
         </div>
@@ -126,7 +143,7 @@ export default function Projects({ images }) {
           <GroupHead num="III" name="Editorial Print" />
           <div className="plates plates--trio">
             {editorial.map((src, i) => (
-              <Plate key={src} src={src} index={i} />
+              <Plate key={src} src={src} index={i} onOpen={() => openAt(i + 8)} />
             ))}
           </div>
         </div>
@@ -136,7 +153,7 @@ export default function Projects({ images }) {
           <GroupHead num="IV" name="Magazine Covers" />
           <div className="plates plates--six">
             {live.map((src, i) => (
-              <Plate key={src} src={src} index={i} />
+              <Plate key={src} src={src} index={i} onOpen={() => openAt(i + 11)} />
             ))}
           </div>
         </div>

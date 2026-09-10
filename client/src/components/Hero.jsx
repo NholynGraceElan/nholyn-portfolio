@@ -1,4 +1,38 @@
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, useReducedMotion, useMotionValue, useSpring } from 'motion/react';
+
+function TiltedArt({ children }) {
+  const reduce = useReducedMotion();
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const srx = useSpring(rx, { stiffness: 140, damping: 18 });
+  const sry = useSpring(ry, { stiffness: 140, damping: 18 });
+
+  const onMove = (e) => {
+    if (reduce) return;
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    rx.set(-py * 10);
+    ry.set(px * 10);
+  };
+
+  const onLeave = () => {
+    rx.set(0);
+    ry.set(0);
+  };
+
+  return (
+    <motion.div
+      className="hero-art"
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ rotateX: srx, rotateY: sry, transformStyle: 'preserve-3d' }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export default function Hero({ portrait, official }) {
   const reduce = useReducedMotion();
@@ -63,15 +97,17 @@ export default function Hero({ portrait, official }) {
       </div>
 
       <motion.div
-        className="hero-art"
+        className="hero-art-wrap"
         initial={{ opacity: 0, scale: reduce ? 1 : 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="hero-portrait">
-          {img && <img src={img} alt="Nholyn Grace" />}
-          <div className="hero-floater">Creative Portfolio &middot; 2026</div>
-        </div>
+        <TiltedArt>
+          <div className="hero-portrait">
+            {img && <img src={img} alt="Nholyn Grace" />}
+            <div className="hero-floater">Creative Portfolio &middot; 2026</div>
+          </div>
+        </TiltedArt>
       </motion.div>
     </header>
   );

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import Reveal from './Reveal.jsx';
+import { useLightbox } from '../lightbox/LightboxProvider.jsx';
 
 const flipVariants = (reduce) => ({
   enter: (d) =>
@@ -14,7 +15,7 @@ const flipVariants = (reduce) => ({
       : { x: '58%', rotateY: reduce ? 0 : 26, opacity: 0 },
 });
 
-function Page({ img, num, total, dir, onDragEnd }) {
+function Page({ img, num, total, dir, onDragEnd, onOpen }) {
   const reduce = useReducedMotion();
   const variants = flipVariants(reduce);
 
@@ -38,7 +39,12 @@ function Page({ img, num, total, dir, onDragEnd }) {
       }}
     >
       <div className="lb-sheet">
-        <img src={img} alt={`Look ${String(num).padStart(2, '0')}`} draggable={false} />
+        <button className="lb-open" onClick={onOpen} aria-label={`Open look ${num} full size`}>
+          <img src={img} alt={`Look ${String(num).padStart(2, '0')}`} draggable={false} />
+          <span className="lb-open-hint" aria-hidden="true">
+            &#8682;
+          </span>
+        </button>
         <div className="lb-sheet-cap">
           <strong>Look {String(num).padStart(2, '0')}</strong>
           <span>{num} / {total}</span>
@@ -51,6 +57,8 @@ function Page({ img, num, total, dir, onDragEnd }) {
 export default function Lookbook({ images }) {
   const [current, setCurrent] = useState(0);
   const [dir, setDir] = useState('next');
+  const [showGrid, setShowGrid] = useState(false);
+  const { open } = useLightbox();
   const total = images.length;
 
   const go = useCallback(
@@ -75,12 +83,13 @@ export default function Lookbook({ images }) {
 
   useEffect(() => {
     const onKey = (e) => {
+      if (showGrid) return;
       if (e.key === 'ArrowRight') go('next');
       if (e.key === 'ArrowLeft') go('prev');
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go]);
+  }, [go, showGrid]);
 
   const ref = useRef(null);
   useEffect(() => {
@@ -97,6 +106,16 @@ export default function Lookbook({ images }) {
     return () => el.removeEventListener('wheel', onWheel);
   }, [go]);
 
+  const openFull = useCallback(
+    (i) => {
+      open(
+        images.map((src, idx) => ({ src, caption: `Look ${String(idx + 1).padStart(2, '0')}` })),
+        i
+      );
+    },
+    [images, open]
+  );
+
   return (
     <section id="lookbook" className="lookbook">
       <div className="lb-head">
@@ -106,58 +125,105 @@ export default function Lookbook({ images }) {
             <h2 className="display">The Nholyn Lookbook</h2>
             <p>
               Twenty-two looks, one after another — flip through like the pages of a magazine.
+              Click any look to view it full size.
             </p>
           </div>
         </Reveal>
       </div>
 
-      <div className="lb-book" ref={ref}>
-        <div className="lb-book-shadow" aria-hidden="true" />
-
+      <div className="lb-toolbar">
         <button
-          className="lb-arrow lb-arrow--prev"
-          onClick={() => go('prev')}
-          disabled={current === 0}
-          aria-label="Previous look"
+          className={`lb-toggle${showGrid ? ' active' : ''}`}
+          onClick={() => setShowGrid((s) => !s)}
         >
-          &#8592;
+          {showGrid ? '&#8592; Flip view' : '&#9776; Grid view'}
         </button>
-
-        <div className="lb-stage">
-          <AnimatePresence custom={dir} initial={false}>
-            <Page
-              key={images[current]}
-              img={images[current]}
-              num={current + 1}
-              total={total}
-              dir={dir}
-              onDragEnd={onDragEnd}
-            />
-          </AnimatePresence>
-        </div>
-
-        <button
-          className="lb-arrow lb-arrow--next"
-          onClick={() => go('next')}
-          disabled={current === total - 1}
-          aria-label="Next look"
-        >
-          &#8594;
-        </button>
+        <span className="lb-hint">Drag, arrow keys, or trackpad to flip</span>
       </div>
 
-      <div className="lb-progress" aria-hidden="true">
-        <div className="lb-progress-track">
+      <AnimatePresence mode="wait">
+        {showGrid ? (
           <motion.div
-            className="lb-progress-fill"
-            animate={{ width: `${((current + 1) / total) * 100}%` }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          />
-        </div>
-        <div className="lb-progress-num">
-          {String(current + 1).padStart(2, '0')} / {total}
-        </div>
-      </div>
+            key="grid"
+            className="lb-grid"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {images.map((src, i) => (
+              <motion.button
+                key={src}
+                className="lb-grid-item"
+                onClick={() => openFull(i)}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.03 * i, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <img src={src} alt={`Look ${String(i + 1).padStart(2, '0')}`} loading="lazy" />
+                <span>Look {String(i + 1).padStart(2, '0')}</span>
+              </motion.button>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="flip"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="lb-book" ref={ref}>
+              <div className="lb-book-shadow" aria-hidden="true" />
+
+              <button
+                className="lb-arrow lb-arrow--prev"
+                onClick={() => go('prev')}
+                disabled={current === 0}
+                aria-label="Previous look"
+              >
+                &#8592;
+              </button>
+
+              <div className="lb-stage">
+                <AnimatePresence custom={dir} initial={false}>
+                  <Page
+                    key={images[current]}
+                    img={images[current]}
+                    num={current + 1}
+                    total={total}
+                    dir={dir}
+                    onDragEnd={onDragEnd}
+                    onOpen={() => openFull(current)}
+                  />
+                </AnimatePresence>
+              </div>
+
+              <button
+                className="lb-arrow lb-arrow--next"
+                onClick={() => go('next')}
+                disabled={current === total - 1}
+                aria-label="Next look"
+              >
+                &#8594;
+              </button>
+            </div>
+
+            <div className="lb-progress" aria-hidden="true">
+              <div className="lb-progress-track">
+                <motion.div
+                  className="lb-progress-fill"
+                  animate={{ width: `${((current + 1) / total) * 100}%` }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </div>
+              <div className="lb-progress-num">
+                {String(current + 1).padStart(2, '0')} / {total}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
